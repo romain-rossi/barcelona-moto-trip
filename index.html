@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Pyrenees Moto Trip · May 2025</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -362,9 +363,37 @@
     color: var(--ink-faint);
   }
 
+  /* MAP */
+  #trip-map {
+    height: 480px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    z-index: 1;
+  }
+  .map-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--ink-muted);
+  }
+  .map-legend span { display: flex; align-items: center; gap: 4px; }
+  .legend-line {
+    display: inline-block;
+    width: 24px;
+    height: 3px;
+    border-radius: 2px;
+    vertical-align: middle;
+  }
+  .leaflet-popup-content { font-family: 'DM Sans', sans-serif; font-size: 13px; line-height: 1.5; }
+  .leaflet-popup-content strong { font-weight: 500; }
+  .popup-type { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-muted); margin-bottom: 2px; }
+
   @media (max-width: 600px) {
     .hero { padding: 48px 24px 40px; }
     .section { margin-top: 40px; }
+    #trip-map { height: 360px; }
   }
 </style>
 </head>
@@ -390,9 +419,9 @@
   <section class="section">
     <p class="section-label">The concept</p>
     <h2 class="section-title">Why Barcelona & 2 days</h2>
-    <p style="color: var(--ink-muted); margin-bottom: 16px;">Julian flies into Barcelona — so that's our base. No one-way rental drama, no 4-day Toulouse detour. We fly or take the train from Avignon, pick up two comfortable touring bikes in the city, and head north into the mountains. Two days is the sweet spot: enough to feel the Pyrenees properly, not enough to see everything — which is exactly the right amount to make Julian want to come back for a longer traverse.</p>
+    <p style="color: var(--ink-muted); margin-bottom: 16px;">Julian flies into Barcelona &mdash; so that's our base. Romain &amp; Limine drive down from Avignon (the car stays parked in Barcelona and makes logistics easier for picking up the bikes). We pick up two comfortable touring bikes in the city and head north into the mountains. Two days is the sweet spot: enough to feel the Pyrenees properly, not enough to see everything &mdash; which is exactly the right amount to make Julian want to come back for a longer traverse.</p>
     <div class="tip-box">
-      <strong>Note for Julian:</strong> The train from Avignon TGV to Barcelona Sants runs in ~3h30 and costs &euro;30&ndash;80 depending on when you book. Much more relaxed than driving, and you arrive fresh.
+      <strong>Note for Julian:</strong> We'll drive from Avignon to Barcelona (~5h via AP-7 motorway) the day before. You and Joanne can fly into Barcelona &mdash; we'll meet you there and head straight to the rental agency together.
     </div>
   </section>
 
@@ -476,6 +505,25 @@
     </div>
   </section>
 
+  <!-- MAP -->
+  <section class="section">
+    <p class="section-label">Overview</p>
+    <h2 class="section-title">Trip map</h2>
+    <div id="trip-map"></div>
+    <div class="map-legend">
+      <span><span class="legend-line" style="background:#888"></span> Drive Avignon &rarr; BCN</span>
+      <span><span class="legend-line" style="background:#b85c1a"></span> Day 1</span>
+      <span><span class="legend-line" style="background:#2d5a27"></span> Day 2</span>
+      <span>&#x1F3CD;&#xFE0F; Start/End</span>
+      <span>&#x1F3DB;&#xFE0F; Visit</span>
+      <span>&#x1F372; Eat</span>
+      <span>&#x1F6CF;&#xFE0F; Sleep</span>
+      <span>&#x2615; Break</span>
+      <span>&#x26FD; Fuel</span>
+      <span>&#x26F0;&#xFE0F; Mountain pass</span>
+    </div>
+  </section>
+
   <!-- LOGISTICS -->
   <section class="section">
     <p class="section-label">Logistics</p>
@@ -483,7 +531,7 @@
     <div class="card">
       <div class="logistics-row">
         <span class="logistics-key">Avignon &rarr; BCN</span>
-        <span class="logistics-val">Train (Avignon TGV &rarr; Barcelona Sants) · 3h30 · Book at <a href="https://www.renfe.com" target="_blank">renfe.com</a> or <a href="https://www.sncf-connect.com" target="_blank">sncf-connect.com</a> · &euro;30&ndash;80 per person if booked 3&ndash;4 weeks ahead</span>
+        <span class="logistics-val">Romain &amp; Limine drive down (~5h via A9/AP-7). Car stays parked in Barcelona during the moto trip &mdash; useful for luggage &amp; gear we don't take on the bikes.</span>
       </div>
       <div class="logistics-row">
         <span class="logistics-key">Night stop</span>
@@ -625,8 +673,8 @@
     <h2 class="section-title">Budget per person</h2>
     <div class="card">
       <div class="budget-row">
-        <span>Train Avignon &harr; Barcelona (&times;2)</span>
-        <span>&euro;80&ndash;160</span>
+        <span>Car Avignon &harr; Barcelona (fuel + tolls, shared)</span>
+        <span>&euro;40&ndash;60</span>
       </div>
       <div class="budget-row">
         <span>Bike rental · 2 days · share per person (2 bikes / 4 people)</span>
@@ -650,7 +698,7 @@
       </div>
       <div class="budget-row total">
         <span>Total per person</span>
-        <span>~&euro;385&ndash;605</span>
+        <span>~&euro;345&ndash;505</span>
       </div>
       <p class="budget-note">Estimate only. Fuel in Andorra is ~30% cheaper than Spain — fill up there. Lunch in mountain villages is inexpensive (&euro;12&ndash;18/person menu del d&iacute;a).</p>
     </div>
@@ -671,8 +719,8 @@
           <span>Riderly and Hertz Ride first. Ask specifically: 2 touring bikes with passenger comfort, same pickup location, 2 days, dates. May fills fast.</span>
         </li>
         <li>
-          <strong>Book Avignon&ndash;Barcelona train</strong>
-          <span>SNCF Connect or Renfe. Outbound Friday evening, return Sunday evening.</span>
+          <strong>Plan the drive down</strong>
+          <span>Romain &amp; Limine drive from Avignon. Julian &amp; Joanne fly into Barcelona. Coordinate arrival times.</span>
         </li>
         <li>
           <strong>Book Puigcerd&agrave; hotel</strong>
@@ -692,5 +740,84 @@
   <p>Prepared for Julian & the crew · April 2025 · Questions? Just ask Romain.</p>
 </div>
 
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script>
+(function() {
+  var map = L.map('trip-map', { scrollWheelZoom: false }).setView([42.2, 2.0], 7);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    maxZoom: 17
+  }).addTo(map);
+
+  function icon(emoji, size) {
+    return L.divIcon({
+      html: '<span style="font-size:' + (size || 22) + 'px">' + emoji + '</span>',
+      className: '',
+      iconSize: [size || 22, size || 22],
+      iconAnchor: [(size || 22)/2, (size || 22)/2],
+      popupAnchor: [0, -(size || 22)/2]
+    });
+  }
+
+  // --- Points of interest ---
+  var spots = [
+    // Pre-trip
+    { ll:[43.9493, 4.8055], ico:'\uD83D\uDE97', label:'Avignon', type:'Start', desc:'Drive down to Barcelona (~5h via A9/AP-7). Car stays parked during the moto trip.' },
+
+    // Day 1
+    { ll:[41.3874, 2.1686], ico:'\uD83C\uDFCD\uFE0F', label:'Barcelona', type:'Bike pickup', desc:'Pick up 2 touring bikes. Coffee. Briefing on intercoms & luggage.', size:26 },
+    { ll:[41.5933, 1.8370], ico:'\uD83C\uDFDB\uFE0F', label:'Montserrat', type:'Visit (optional)', desc:'Dramatic cliff monastery. 30-min stop \u2014 the access road is already fun.' },
+    { ll:[42.1012, 1.8456], ico:'\u2615', label:'Berga (Bergued\u00e0)', type:'Break / coffee', desc:'First real mountain roads, pine forests, no traffic. C-16 then smaller roads.' },
+    { ll:[42.3400, 1.9350], ico:'\uD83C\uDF72', label:'Alp / La Molina', type:'Lunch', desc:'Ski station at ~1400m. Great lunch spot with the first real Pyrenees panorama.' },
+    { ll:[42.4316, 1.9282], ico:'\uD83D\uDECF\uFE0F', label:'Puigcerd\u00e0', type:'Night stop', desc:'Border town, lovely lake, excellent restaurants. ~1200m altitude \u2014 pack warm layers.', size:26 },
+
+    // Day 2
+    { ll:[42.5614, 1.8208], ico:'\u26F0\uFE0F', label:'Col de Puymorens (2001m)', type:'Mountain pass', desc:'The real mountain pass. Switchbacks, possible snow patches in early May \u2014 spectacular.' },
+    { ll:[42.5425, 1.7332], ico:'\u26FD', label:'Pas de la Casa', type:'Fuel stop', desc:'Cheapest fuel in Europe. Quick border-crossing novelty.' },
+    { ll:[42.5063, 1.5218], ico:'\uD83C\uDFDB\uFE0F', label:'Andorra la Vella', type:'Visit (optional)', desc:'Quick duty-free stop for Julian if he wants. Fill up fuel.' },
+    { ll:[42.3576, 1.4571], ico:'\u2615', label:'La Seu d\u2019Urgell', type:'Coffee & pastries', desc:'Beautiful old town with a Romanesque cathedral. Perfect mid-morning break.' },
+    { ll:[41.9115, 1.6810], ico:'\uD83C\uDFDB\uFE0F', label:'Cardona (optional)', type:'Visit', desc:'Salt mountain castle \u2014 spectacular and weird. Good if energy levels are high.' },
+    { ll:[41.3874, 2.1686], ico:'\uD83C\uDFCD\uFE0F', label:'Barcelona', type:'Bike return', desc:'Return bikes by 17:00\u201318:00. Beers. Mission accomplished.', size:26 }
+  ];
+
+  spots.forEach(function(s) {
+    L.marker(s.ll, { icon: icon(s.ico, s.size) })
+      .addTo(map)
+      .bindPopup(
+        '<div class="popup-type">' + s.type + '</div>' +
+        '<strong>' + s.label + '</strong><br>' + s.desc
+      );
+  });
+
+  // --- Route lines ---
+  // Pre-trip drive (dashed grey)
+  var driveRoute = [
+    [43.9493, 4.8055], [43.6047, 3.8807], [43.2965, 3.4710],
+    [42.6977, 2.8956], [42.4326, 2.5926], [41.9794, 2.3150],
+    [41.5888, 2.2219], [41.3874, 2.1686]
+  ];
+  L.polyline(driveRoute, { color:'#888', weight:3, dashArray:'8,8', opacity:0.6 }).addTo(map);
+
+  // Day 1: Barcelona -> Puigcerda (warm orange)
+  var day1 = [
+    [41.3874, 2.1686], [41.5933, 1.8370], [41.7500, 1.8300],
+    [42.1012, 1.8456], [42.2200, 1.8800], [42.3400, 1.9350],
+    [42.4316, 1.9282]
+  ];
+  L.polyline(day1, { color:'#b85c1a', weight:4, opacity:0.85 }).addTo(map);
+
+  // Day 2: Puigcerda -> Puymorens -> Andorra -> La Seu -> Cardona -> Barcelona (green)
+  var day2 = [
+    [42.4316, 1.9282], [42.5614, 1.8208], [42.5425, 1.7332],
+    [42.5063, 1.5218], [42.3576, 1.4571], [42.1500, 1.5800],
+    [41.9115, 1.6810], [41.6500, 1.8000], [41.3874, 2.1686]
+  ];
+  L.polyline(day2, { color:'#2d5a27', weight:4, opacity:0.85 }).addTo(map);
+
+  // Fit map to show everything
+  var allPoints = driveRoute.concat(day1).concat(day2);
+  map.fitBounds(L.latLngBounds(allPoints).pad(0.08));
+})();
+</script>
 </body>
 </html>
