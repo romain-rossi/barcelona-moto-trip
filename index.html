@@ -370,12 +370,55 @@
     color: var(--ink-faint);
   }
 
-  /* MAP */
+  /* MAP \u2014 full-width hero map */
   #trip-map {
-    height: 480px;
-    border-radius: 12px;
-    border: 1px solid var(--border);
+    height: 560px;
+    width: 100%;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    border-bottom: 1px solid var(--border);
     z-index: 1;
+    position: relative;
+  }
+  .map-zoom-hint {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(26,26,24,0.55);
+    color: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 17px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    z-index: 600;
+  }
+  .map-zoom-hint.visible { opacity: 1; }
+  .map-zoom-hint kbd {
+    display: inline-block;
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 4px;
+    padding: 2px 7px;
+    margin: 0 2px;
+    font-family: inherit;
+    font-size: 14px;
+  }
+  .map-meta {
+    max-width: 800px;
+    margin: 28px auto 0;
+    padding: 0 24px;
+  }
+  .map-meta-caption {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 10px;
   }
   .map-legend {
     display: flex;
@@ -397,10 +440,41 @@
   .leaflet-popup-content strong { font-weight: 500; }
   .popup-type { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-muted); margin-bottom: 2px; }
 
+  /* GPX DOWNLOAD BUTTONS */
+  .gpx-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 16px;
+  }
+  .gpx-btn {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 8px 14px;
+    font: 500 13px 'DM Sans', sans-serif;
+    color: var(--ink);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .gpx-btn::before { content: '\2B07'; font-size: 11px; }
+  .gpx-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .gpx-note {
+    font-size: 12px;
+    color: var(--ink-faint);
+    margin-top: 10px;
+    line-height: 1.6;
+  }
+  .gpx-note a { color: var(--accent); text-decoration: none; }
+  .gpx-note a:hover { text-decoration: underline; }
+
   @media (max-width: 600px) {
     .hero { padding: 48px 24px 40px; }
     .section { margin-top: 40px; }
-    #trip-map { height: 360px; }
+    #trip-map { height: 380px; }
   }
 </style>
 </head>
@@ -418,6 +492,39 @@
       <span class="pill">Andorra optional</span>
     </div>
   </div>
+</div>
+
+<div id="trip-map"></div>
+
+<div class="map-meta">
+  <p class="map-meta-caption">The route at a glance</p>
+  <div class="map-legend">
+    <span><span class="legend-line" style="background:#888"></span> Drive Avignon &rarr; BCN</span>
+    <span><span class="legend-line" style="background:#e6005c"></span> Day 1 main (Coll de Toses)</span>
+    <span><span class="legend-line" style="background:repeating-linear-gradient(to right,#e6005c 0 8px,transparent 8px 12px)"></span> Day 1 alt (Cad&iacute; tunnel)</span>
+    <span><span class="legend-line" style="background:#0066ff"></span> Day 2 main (Andorra loop)</span>
+    <span><span class="legend-line" style="background:repeating-linear-gradient(to right,#0066ff 0 8px,transparent 8px 12px)"></span> Day 2 alt (Port del Cant&oacute;)</span>
+    <span>&#x1F3CD;&#xFE0F; Start/End</span>
+    <span>&#x1F3DB;&#xFE0F; Visit</span>
+    <span>&#x1F372; Eat</span>
+    <span>&#x1F6CF;&#xFE0F; Sleep</span>
+    <span>&#x2615; Break</span>
+    <span>&#x26FD; Fuel</span>
+    <span>&#x26F0;&#xFE0F; Mountain pass</span>
+  </div>
+  <div class="gpx-buttons">
+    <button class="gpx-btn" data-gpx="day1-main" type="button">Day 1 &mdash; Twisty (Coll de Toses)</button>
+    <button class="gpx-btn" data-gpx="day1-alt" type="button">Day 1 alt &mdash; Direct (Cad&iacute; tunnel)</button>
+    <button class="gpx-btn" data-gpx="day2-main" type="button">Day 2 &mdash; Andorra loop</button>
+    <button class="gpx-btn" data-gpx="day2-alt" type="button">Day 2 alt &mdash; Port del Cant&oacute;</button>
+  </div>
+  <p class="gpx-note">
+    <span id="route-status">Loading road-snapped tracks via <a href="https://brouter.de/" target="_blank" rel="noopener">BRouter</a>&hellip;</span><br>
+    Routes inspired by <a href="https://kurviger.de/" target="_blank" rel="noopener">Kurviger</a>,
+    <a href="https://www.pyreneesonmotorbike.com/" target="_blank" rel="noopener">pyreneesonmotorbike.com</a>
+    and <a href="https://www.wikiloc.com/trail-bike-trails/n-260-eje-pirenaico-195008582" target="_blank" rel="noopener">Wikiloc N-260 Eix Pirinenc</a> traces.
+    The exported GPX includes named waypoints + the actual road-snapped track &mdash; ready to import into Kurviger / Calimoto / OsmAnd.
+  </p>
 </div>
 
 <div class="content">
@@ -516,25 +623,6 @@
       <div class="tip-box">
         <strong>Weather note:</strong> Col de Puymorens at 2001m can still have morning frost in May. Check conditions the evening before — alternative route via lower valley always available.
       </div>
-    </div>
-  </section>
-
-  <!-- MAP -->
-  <section class="section">
-    <p class="section-label">Overview</p>
-    <h2 class="section-title">Trip map</h2>
-    <div id="trip-map"></div>
-    <div class="map-legend">
-      <span><span class="legend-line" style="background:#888"></span> Drive Avignon &rarr; BCN</span>
-      <span><span class="legend-line" style="background:#b85c1a"></span> Day 1</span>
-      <span><span class="legend-line" style="background:#2d5a27"></span> Day 2</span>
-      <span>&#x1F3CD;&#xFE0F; Start/End</span>
-      <span>&#x1F3DB;&#xFE0F; Visit</span>
-      <span>&#x1F372; Eat</span>
-      <span>&#x1F6CF;&#xFE0F; Sleep</span>
-      <span>&#x2615; Break</span>
-      <span>&#x26FD; Fuel</span>
-      <span>&#x26F0;&#xFE0F; Mountain pass</span>
     </div>
   </section>
 
@@ -776,10 +864,65 @@
 <script>
 (function() {
   var map = L.map('trip-map', { scrollWheelZoom: false }).setView([42.2, 2.0], 7);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+
+  // Ctrl/Cmd + scroll to zoom \u2014 prevents the map from hijacking
+  // page scroll, but enables zoom when the user explicitly asks for it.
+  // An overlay hint appears if they scroll without the modifier key.
+  (function setupCtrlZoom() {
+    var mapEl = document.getElementById('trip-map');
+    var isMac = /Mac|iPad|iPhone|iPod/.test(navigator.platform);
+    var hint = document.createElement('div');
+    hint.className = 'map-zoom-hint';
+    hint.innerHTML = 'Use <kbd>' + (isMac ? '\u2318' : 'Ctrl') + '</kbd> + scroll to zoom the map';
+    mapEl.appendChild(hint);
+
+    var hintTimer;
+    function flashHint() {
+      hint.classList.add('visible');
+      clearTimeout(hintTimer);
+      hintTimer = setTimeout(function() { hint.classList.remove('visible'); }, 1400);
+    }
+
+    mapEl.addEventListener('wheel', function(e) {
+      if (e.ctrlKey || e.metaKey) {
+        if (!map.scrollWheelZoom.enabled()) map.scrollWheelZoom.enable();
+        hint.classList.remove('visible');
+      } else {
+        if (map.scrollWheelZoom.enabled()) map.scrollWheelZoom.disable();
+        flashHint();
+      }
+    }, { passive: true });
+
+    // Disable wheel zoom again as soon as the modifier is released,
+    // so a stray scroll without Ctrl never zooms unexpectedly.
+    document.addEventListener('keyup', function(e) {
+      if (e.key === 'Control' || e.key === 'Meta') {
+        if (map.scrollWheelZoom.enabled()) map.scrollWheelZoom.disable();
+      }
+    });
+    // Also disable when the cursor leaves the map
+    mapEl.addEventListener('mouseleave', function() {
+      if (map.scrollWheelZoom.enabled()) map.scrollWheelZoom.disable();
+      hint.classList.remove('visible');
+    });
+  })();
+
+  // Base layers \u2014 standard OSM for readability, OpenTopoMap for relief
+  var osmStandard = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-    maxZoom: 17
-  }).addTo(map);
+    maxZoom: 19
+  });
+  var osmTopo = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+    attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)',
+    maxZoom: 17,
+    subdomains: 'abc'
+  });
+  osmTopo.addTo(map); // default: topo for relief visualisation
+  L.control.layers(
+    { 'Topo (relief)': osmTopo, 'Standard (OSM)': osmStandard },
+    null,
+    { position: 'topright', collapsed: false }
+  ).addTo(map);
 
   function icon(emoji, size) {
     return L.divIcon({
@@ -791,25 +934,49 @@
     });
   }
 
-  // --- Points of interest ---
+  // ============================================================
+  // Waypoints / POIs
+  // Inspired by Kurviger, pyreneesonmotorbike.com and the
+  // Wikiloc N-260 "Eix Pirinenc" trace. Each spot can appear
+  // in one or more route GPX exports via waypointLabels below.
+  // ============================================================
   var spots = [
-    // Pre-trip
-    { ll:[43.9493, 4.8055], ico:'\uD83D\uDE97', label:'Avignon', type:'Start', desc:'Drive down to Barcelona (~5h via A9/AP-7). Car stays parked during the moto trip.' },
+    // Pre-trip (car)
+    { ll:[43.9493, 4.8055], ico:'\uD83D\uDE97', label:'Avignon', type:'Start (car)', desc:'Drive down to Barcelona (~5h via A9/AP-7). Car stays parked during the moto trip.' },
 
-    // Day 1
-    { ll:[41.3874, 2.1686], ico:'\uD83C\uDFCD\uFE0F', label:'Barcelona', type:'Bike pickup', desc:'Pick up 2 touring bikes. Coffee. Briefing on intercoms & luggage.', size:26 },
-    { ll:[41.5933, 1.8370], ico:'\uD83C\uDFDB\uFE0F', label:'Montserrat', type:'Visit (optional)', desc:'Dramatic cliff monastery. 30-min stop \u2014 the access road is already fun.' },
-    { ll:[42.1012, 1.8456], ico:'\u2615', label:'Berga (Bergued\u00e0)', type:'Break / coffee', desc:'First real mountain roads, pine forests, no traffic. C-16 then smaller roads.' },
-    { ll:[42.3400, 1.9350], ico:'\uD83C\uDF72', label:'Alp / La Molina', type:'Lunch', desc:'Ski station at ~1400m. Great lunch spot with the first real Pyrenees panorama.' },
+    // Anchors
+    { ll:[41.3874, 2.1686], ico:'\uD83C\uDFCD\uFE0F', label:'Barcelona', type:'Bike pickup / return', desc:'Pick up & return the 2 touring bikes. Coffee, briefing, and beers on the way back.', size:26 },
     { ll:[42.4316, 1.9282], ico:'\uD83D\uDECF\uFE0F', label:'Puigcerd\u00e0', type:'Night stop', desc:'Border town, lovely lake, excellent restaurants. ~1200m altitude \u2014 pack warm layers.', size:26 },
 
-    // Day 2
-    { ll:[42.5614, 1.8208], ico:'\u26F0\uFE0F', label:'Col de Puymorens (2001m)', type:'Mountain pass', desc:'The real mountain pass. Switchbacks, possible snow patches in early May \u2014 spectacular.' },
+    // Day 1 \u2014 Twisty (N-152 via Coll de Toses)
+    { ll:[41.9303, 2.2545], ico:'\u2615', label:'Vic', type:'Coffee break', desc:'Plain of Vic \u2014 fast warm-up section before the mountains kick in.' },
+    { ll:[42.2010, 2.1907], ico:'\uD83C\uDFDB\uFE0F', label:'Ripoll', type:'Visit', desc:'Romanesque monastery (Santa Maria de Ripoll) \u2014 worth a 20-min stop. Birthplace of Catalonia.' },
+    { ll:[42.3066, 2.1671], ico:'\uD83C\uDF72', label:'Ribes de Freser', type:'Lunch option', desc:'Mountain village. Perfect set-menu lunch (men\u00fa del d\u00eda) before the climb to Toses.' },
+    { ll:[42.33603, 1.99112], ico:'\u26F0\uFE0F', label:'Collada de Toses (1800m)', type:'Mountain pass', desc:'Legendary biker pass on the N-152 \u2014 endless curves and panoramas over the Cerdanya valley.' },
+    { ll:[42.3713, 1.9007], ico:'\uD83D\uDCF8', label:'Alp / La Molina', type:'Photo stop', desc:'Ski station at ~1400m. First real Pyrenees panorama.' },
+
+    // Day 1 alt (C-16 / Cad\u00ed tunnel) + Berga + Sant Lloren\u00e7
+    { ll:[41.7286, 1.8267], ico:'\u26FD', label:'Manresa', type:'Fuel / coffee', desc:'Halfway up the C-16 corridor \u2014 quick stop, refuel.' },
+    { ll:[42.1012, 1.8456], ico:'\u2615', label:'Berga (Bergued\u00e0)', type:'Break / coffee', desc:'Gateway to the Cad\u00ed range. Optional 15-min climb to Santuari de Queralt for the cliff viewpoint.' },
+    { ll:[42.2530, 1.8616], ico:'\uD83D\uDE87', label:'T\u00fanel del Cad\u00ed', type:'Tunnel (toll)', desc:'5km tunnel under the Cad\u00ed range. ~\u20ac12 toll. Fast option if Toses is socked in.' },
+    { ll:[42.3722, 1.7745], ico:'\u2615', label:'Bellver de Cerdanya', type:'Stop', desc:'Charming Cerdanya village with a medieval centre.' },
+    { ll:[42.1377, 1.5919], ico:'\u26F0\uFE0F', label:'Sant Lloren\u00e7 de Morunys', type:'Detour POI', desc:'Tiny mountain village reached via the Coll de Jou \u2014 a Kurviger-favourite curvy detour off the C-26.' },
+
+    // Day 2 main (Andorra loop)
+    { ll:[42.55962, 1.81084], ico:'\u26F0\uFE0F', label:'Col de Puymorens (2001m)', type:'Mountain pass', desc:'The real high pass on the N-22. Switchbacks, possible early-May snow patches \u2014 spectacular.' },
     { ll:[42.5425, 1.7332], ico:'\u26FD', label:'Pas de la Casa', type:'Fuel stop', desc:'Cheapest fuel in Europe. Quick border-crossing novelty.' },
-    { ll:[42.5063, 1.5218], ico:'\uD83C\uDFDB\uFE0F', label:'Andorra la Vella', type:'Visit (optional)', desc:'Quick duty-free stop for Julian if he wants. Fill up fuel.' },
+    { ll:[42.5063, 1.5218], ico:'\uD83C\uDFDB\uFE0F', label:'Andorra la Vella', type:'Visit (optional)', desc:'Quick duty-free stop. Refuel.' },
     { ll:[42.3576, 1.4571], ico:'\u2615', label:'La Seu d\u2019Urgell', type:'Coffee & pastries', desc:'Beautiful old town with a Romanesque cathedral. Perfect mid-morning break.' },
-    { ll:[41.9115, 1.6810], ico:'\uD83C\uDFDB\uFE0F', label:'Cardona (optional)', type:'Visit', desc:'Salt mountain castle \u2014 spectacular and weird. Good if energy levels are high.' },
-    { ll:[41.3874, 2.1686], ico:'\uD83C\uDFCD\uFE0F', label:'Barcelona', type:'Bike return', desc:'Return bikes by 17:00\u201318:00. Beers. Mission accomplished.', size:26 }
+
+    // Day 2 alt (Eix Pirinenc west + Port del Cant\u00f3)
+    { ll:[42.37036, 1.23777], ico:'\u26F0\uFE0F', label:'Port del Cant\u00f3 (1718m)', type:'Mountain pass', desc:'One of the very best motorcycle passes in Spain \u2014 endless N-260 curves between La Seu and Sort.' },
+    { ll:[42.4128, 1.1300], ico:'\u2615', label:'Sort', type:'Break', desc:'Pallars Sobir\u00e0 capital. Lottery-shop town and whitewater hub.' },
+    { ll:[42.05444, 1.09013], ico:'\u26F0\uFE0F', label:'Coll de Comiols (1360m)', type:'Mountain pass', desc:'Quiet, scenic pass on the C-14 between Pallars and Urgell \u2014 empty road, perfect rhythm.' },
+    { ll:[41.9943, 1.5187], ico:'\uD83C\uDFDB\uFE0F', label:'Solsona', type:'Visit', desc:'Walled medieval town. Cathedral + salt-mine museum nearby.' },
+    { ll:[41.9131, 1.6800], ico:'\uD83C\uDFDB\uFE0F', label:'Cardona', type:'Visit (optional)', desc:'Salt-mountain castle \u2014 spectacular and weird. Good if energy levels are high.' },
+
+    // Bonus optional, anchored to Day 1
+    { ll:[41.5933, 1.8370], ico:'\uD83C\uDFDB\uFE0F', label:'Montserrat', type:'Visit (optional)', desc:'Dramatic cliff monastery \u2014 30-min stop, the access road is already fun.' }
   ];
 
   spots.forEach(function(s) {
@@ -821,34 +988,270 @@
       );
   });
 
-  // --- Route lines ---
-  // Pre-trip drive (dashed grey)
-  var driveRoute = [
-    [43.9493, 4.8055], [43.6047, 3.8807], [43.2965, 3.4710],
-    [42.6977, 2.8956], [42.4326, 2.5926], [41.9794, 2.3150],
-    [41.5888, 2.2219], [41.3874, 2.1686]
-  ];
-  L.polyline(driveRoute, { color:'#888', weight:3, dashArray:'8,8', opacity:0.6 }).addTo(map);
+  // ============================================================
+  // Routes \u2014 main + alternatives
+  // Tracks are simplified polylines that follow the recommended
+  // road geometry well enough for a visual proposal. The exported
+  // GPX has the same shape; riders should re-snap to roads in
+  // their navigation app (Kurviger, Calimoto, OsmAnd...).
+  // ============================================================
+  var routes = {
+    'drive': {
+      name: 'Avignon \u2192 Barcelona (car)',
+      color: '#888', dash: '8,8', weight: 3,
+      track: [
+        [43.9493, 4.8055], [43.6047, 3.8807], [43.2965, 3.4710],
+        [42.6977, 2.8956], [42.4326, 2.5926], [41.9794, 2.3150],
+        [41.5888, 2.2219], [41.3874, 2.1686]
+      ],
+      waypointLabels: ['Avignon', 'Barcelona']
+    },
+    'day1-main': {
+      name: 'Day 1 \u2014 Twisty via Coll de Toses (N-152)',
+      color: '#e6005c', weight: 5,
+      track: [
+        [41.3874, 2.1686], [41.5450, 2.2300], [41.7330, 2.2540],
+        [41.9303, 2.2545], [42.0540, 2.2360], [42.2010, 2.1907],
+        [42.3066, 2.1671], [42.3164, 2.1014], [42.3357, 1.9889],
+        [42.3400, 1.9350], [42.3713, 1.9007], [42.4316, 1.9282]
+      ],
+      waypointLabels: ['Barcelona', 'Vic', 'Ripoll', 'Ribes de Freser', 'Collada de Toses (1800m)', 'Alp / La Molina', 'Puigcerd\u00e0']
+    },
+    'day1-alt': {
+      name: 'Day 1 alt \u2014 Direct via C-16 / Cad\u00ed tunnel',
+      color: '#e6005c', dash: '10,6', weight: 4,
+      track: [
+        [41.3874, 2.1686], [41.5400, 1.9100], [41.7286, 1.8267],
+        [41.9500, 1.8400], [42.1012, 1.8456], [42.2530, 1.8616],
+        [42.3722, 1.7745], [42.4316, 1.9282]
+      ],
+      waypointLabels: ['Barcelona', 'Manresa', 'Berga (Bergued\u00e0)', 'T\u00fanel del Cad\u00ed', 'Bellver de Cerdanya', 'Puigcerd\u00e0']
+    },
+    'day2-main': {
+      name: 'Day 2 \u2014 Andorra loop (Puymorens + Cad\u00ed)',
+      color: '#0066ff', weight: 5,
+      track: [
+        [42.4316, 1.9282], [42.5100, 1.8500], [42.5614, 1.8208],
+        [42.5425, 1.7332], [42.5300, 1.6500], [42.5063, 1.5218],
+        [42.3576, 1.4571], [42.3000, 1.6500], [42.2530, 1.8616],
+        [42.1012, 1.8456], [41.7286, 1.8267], [41.5400, 1.9100],
+        [41.3874, 2.1686]
+      ],
+      waypointLabels: ['Puigcerd\u00e0', 'Col de Puymorens (2001m)', 'Pas de la Casa', 'Andorra la Vella', 'La Seu d\u2019Urgell', 'T\u00fanel del Cad\u00ed', 'Berga (Bergued\u00e0)', 'Manresa', 'Barcelona']
+    },
+    'day2-alt': {
+      name: 'Day 2 alt \u2014 Eix Pirinenc west + Port del Cant\u00f3',
+      color: '#0066ff', dash: '10,6', weight: 4,
+      track: [
+        [42.4316, 1.9282], [42.3722, 1.7745], [42.3576, 1.4571],
+        [42.3489, 1.2942], [42.4128, 1.1300], [42.2510, 0.9684],
+        [42.1666, 0.8941], [42.0600, 1.0770], [41.9152, 1.1854],
+        [41.9943, 1.5187], [41.9131, 1.6800], [41.7286, 1.8267],
+        [41.5400, 1.9100], [41.3874, 2.1686]
+      ],
+      waypointLabels: ['Puigcerd\u00e0', 'Bellver de Cerdanya', 'La Seu d\u2019Urgell', 'Port del Cant\u00f3 (1718m)', 'Sort', 'Coll de Comiols (1360m)', 'Solsona', 'Cardona', 'Manresa', 'Barcelona']
+    }
+  };
 
-  // Day 1: Barcelona -> Puigcerda (warm orange)
-  var day1 = [
-    [41.3874, 2.1686], [41.5933, 1.8370], [41.7500, 1.8300],
-    [42.1012, 1.8456], [42.2200, 1.8800], [42.3400, 1.9350],
-    [42.4316, 1.9282]
-  ];
-  L.polyline(day1, { color:'#b85c1a', weight:4, opacity:0.85 }).addTo(map);
+  // Index spots by label so routes can pull waypoint coords + descriptions
+  var spotByLabel = {};
+  spots.forEach(function(s) { spotByLabel[s.label] = s; });
 
-  // Day 2: Puigcerda -> Puymorens -> Andorra -> La Seu -> Cardona -> Barcelona (green)
-  var day2 = [
-    [42.4316, 1.9282], [42.5614, 1.8208], [42.5425, 1.7332],
-    [42.5063, 1.5218], [42.3576, 1.4571], [42.1500, 1.5800],
-    [41.9115, 1.6810], [41.6500, 1.8000], [41.3874, 2.1686]
-  ];
-  L.polyline(day2, { color:'#2d5a27', weight:4, opacity:0.85 }).addTo(map);
+  // Render all polylines (initially with the simplified track \u2014
+  // they'll be replaced by the BRouter road-snapped geometry below).
+  // Each route gets a white casing underneath for legibility on the
+  // topo layer (greens/browns can otherwise hide a coloured line).
+  Object.keys(routes).forEach(function(key) {
+    var r = routes[key];
+    var w = r.weight || 4;
+    if (key !== 'drive') {
+      r._casing = L.polyline(r.track, {
+        color: '#ffffff',
+        weight: w + 3,
+        opacity: 0.85,
+        lineCap: 'round',
+        lineJoin: 'round'
+      }).addTo(map);
+    }
+    r._layer = L.polyline(r.track, {
+      color: r.color,
+      weight: w,
+      opacity: r.dash ? 0.95 : 1,
+      dashArray: r.dash || null,
+      lineCap: 'round',
+      lineJoin: 'round'
+    }).addTo(map);
+  });
 
-  // Fit map to show everything
-  var allPoints = driveRoute.concat(day1).concat(day2);
-  map.fitBounds(L.latLngBounds(allPoints).pad(0.08));
+  // Fit map on the 2 moto days only \u2014 the Avignon\u2192BCN drive is
+  // secondary and would otherwise zoom the view way out to fit Provence.
+  // The drive polyline + Avignon marker stay visible if the user pans up.
+  var motoPoints = [];
+  Object.keys(routes).forEach(function(k) {
+    if (k !== 'drive') motoPoints = motoPoints.concat(routes[k].track);
+  });
+  map.fitBounds(L.latLngBounds(motoPoints).pad(0.06));
+
+  // ============================================================
+  // Road snapping via BRouter (https://brouter.de/brouter)
+  // Free, no API key. We send the named waypoints (from spots[])
+  // as via-points and BRouter returns the actual road geometry.
+  // Result is cached in localStorage for 30 days so repeat
+  // visitors don't re-hit the public service.
+  // ============================================================
+  var BROUTER_URL = 'https://brouter.de/brouter';
+  var ROUTING_PROFILE = 'car-fast'; // safest predictable profile on brouter.de
+  var CACHE_VERSION = 'v2';
+  var CACHE_TTL_MS = 30 * 24 * 3600 * 1000;
+  var statusEl = document.getElementById('route-status');
+  var snappableKeys = Object.keys(routes).filter(function(k) {
+    var r = routes[k];
+    return r.waypointLabels && r.waypointLabels.length >= 2;
+  });
+  var pending = snappableKeys.length;
+  var failed = 0;
+
+  function updateStatus() {
+    if (!statusEl) return;
+    if (pending > 0) {
+      statusEl.textContent = 'Loading road-snapped tracks via BRouter\u2026 (' +
+        (snappableKeys.length - pending) + '/' + snappableKeys.length + ')';
+    } else if (failed === 0) {
+      statusEl.innerHTML = 'Road-snapped tracks loaded via <a href="https://brouter.de/" target="_blank" rel="noopener">BRouter</a> (profile: <code>' + ROUTING_PROFILE + '</code>). Exported GPX uses the snapped geometry.';
+    } else if (failed === snappableKeys.length) {
+      statusEl.innerHTML = '<a href="https://brouter.de/" target="_blank" rel="noopener">BRouter</a> unreachable \u2014 falling back to simplified tracks. Re-snap on import in Kurviger / OsmAnd.';
+    } else {
+      statusEl.innerHTML = 'Road-snapped tracks loaded (' + (snappableKeys.length - failed) + '/' + snappableKeys.length + '). The rest fall back to simplified geometry.';
+    }
+  }
+
+  function cacheKey(routeKey) {
+    return 'pyrenees-moto:' + CACHE_VERSION + ':' + ROUTING_PROFILE + ':' + routeKey;
+  }
+  function loadCached(routeKey) {
+    try {
+      var raw = localStorage.getItem(cacheKey(routeKey));
+      if (!raw) return null;
+      var obj = JSON.parse(raw);
+      if (!obj || !obj.coords || (Date.now() - obj.t) > CACHE_TTL_MS) return null;
+      return obj.coords;
+    } catch (e) { return null; }
+  }
+  function saveCached(routeKey, coords) {
+    try {
+      localStorage.setItem(cacheKey(routeKey), JSON.stringify({ t: Date.now(), coords: coords }));
+    } catch (e) { /* quota or disabled \u2014 ignore */ }
+  }
+
+  function fetchSnapped(routeKey) {
+    var r = routes[routeKey];
+    var lonlats = r.waypointLabels.map(function(label) {
+      var s = spotByLabel[label];
+      return s ? (s.ll[1].toFixed(5) + ',' + s.ll[0].toFixed(5)) : null;
+    }).filter(Boolean).join('|');
+    var url = BROUTER_URL + '?lonlats=' + lonlats +
+      '&profile=' + ROUTING_PROFILE + '&alternativeidx=0&format=geojson';
+    return fetch(url).then(function(resp) {
+      if (!resp.ok) throw new Error('brouter http ' + resp.status);
+      return resp.json();
+    }).then(function(geo) {
+      var feat = geo && geo.features && geo.features[0];
+      if (!feat || !feat.geometry || !feat.geometry.coordinates) return null;
+      // GeoJSON LineString uses [lon, lat] \u2014 swap for Leaflet
+      return feat.geometry.coordinates.map(function(c) { return [c[1], c[0]]; });
+    });
+  }
+
+  function applySnapped(routeKey, coords) {
+    var r = routes[routeKey];
+    if (!coords || coords.length < 2 || !r._layer) return;
+    r.snappedTrack = coords;
+    r._layer.setLatLngs(coords);
+    if (r._casing) r._casing.setLatLngs(coords);
+  }
+
+  updateStatus();
+  snappableKeys.forEach(function(key) {
+    var cached = loadCached(key);
+    if (cached) {
+      applySnapped(key, cached);
+      pending--;
+      updateStatus();
+      return;
+    }
+    fetchSnapped(key).then(function(coords) {
+      if (coords) {
+        applySnapped(key, coords);
+        saveCached(key, coords);
+      } else {
+        failed++;
+      }
+    }).catch(function(err) {
+      console.warn('BRouter failed for', key, err);
+      failed++;
+    }).then(function() {
+      pending--;
+      updateStatus();
+    });
+  });
+
+  // ============================================================
+  // GPX export (client-side, no build step)
+  // For each route key we build a GPX 1.1 document with:
+  //  - <wpt> entries for the named waypoints (from spots[])
+  //  - one <trk>/<trkseg> with the road-snapped track
+  //    (or the simplified fallback if BRouter wasn't reachable)
+  // ============================================================
+  function escapeXml(s) {
+    return String(s).replace(/[<>&"']/g, function(c) {
+      return ({ '<':'&lt;', '>':'&gt;', '&':'&amp;', '"':'&quot;', "'":'&apos;' })[c];
+    });
+  }
+
+  function buildGpx(routeKey) {
+    var r = routes[routeKey];
+    if (!r) return '';
+    var wpts = (r.waypointLabels || []).map(function(label) {
+      var s = spotByLabel[label];
+      if (!s) return '';
+      return '  <wpt lat="' + s.ll[0] + '" lon="' + s.ll[1] + '">\n' +
+             '    <name>' + escapeXml(s.label) + '</name>\n' +
+             '    <type>' + escapeXml(s.type) + '</type>\n' +
+             '    <desc>' + escapeXml(s.desc) + '</desc>\n' +
+             '  </wpt>';
+    }).filter(Boolean).join('\n');
+    var trackPoints = r.snappedTrack || r.track;
+    var trkpts = trackPoints.map(function(p) {
+      return '      <trkpt lat="' + p[0] + '" lon="' + p[1] + '"></trkpt>';
+    }).join('\n');
+    return '<?xml version="1.0" encoding="UTF-8"?>\n' +
+      '<gpx version="1.1" creator="Pyrenees Moto Trip" xmlns="http://www.topografix.com/GPX/1/1">\n' +
+      '  <metadata>\n    <name>' + escapeXml(r.name) + '</name>\n  </metadata>\n' +
+      wpts + (wpts ? '\n' : '') +
+      '  <trk>\n    <name>' + escapeXml(r.name) + '</name>\n    <trkseg>\n' +
+      trkpts + '\n' +
+      '    </trkseg>\n  </trk>\n</gpx>\n';
+  }
+
+  function downloadGpx(routeKey) {
+    var blob = new Blob([buildGpx(routeKey)], { type: 'application/gpx+xml' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'pyrenees-moto-' + routeKey + '.gpx';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function() {
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }, 0);
+  }
+
+  document.querySelectorAll('[data-gpx]').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      downloadGpx(btn.getAttribute('data-gpx'));
+    });
+  });
 })();
 </script>
 </body>
