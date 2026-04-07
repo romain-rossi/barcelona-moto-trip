@@ -440,28 +440,155 @@
   .leaflet-popup-content strong { font-weight: 500; }
   .popup-type { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-muted); margin-bottom: 2px; }
 
-  /* GPX DOWNLOAD BUTTONS */
-  .gpx-buttons {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 16px;
+  /* ROUTE CARDS (replaces flat GPX buttons) */
+  .route-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+    gap: 12px;
+    margin-top: 18px;
   }
-  .gpx-btn {
+  .route-card {
     background: var(--bg-card);
     border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .route-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .route-card-headings { min-width: 0; }
+  .route-card-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #fff;
+    padding: 3px 9px;
     border-radius: 100px;
-    padding: 8px 14px;
-    font: 500 13px 'DM Sans', sans-serif;
+  }
+  .route-card-name {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    margin-top: 5px;
+    color: var(--ink);
+    line-height: 1.3;
+  }
+  .gpx-btn {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 11px;
+    font: 500 11px 'DM Sans', sans-serif;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
     color: var(--ink);
     cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
+    white-space: nowrap;
     transition: border-color 0.15s, color 0.15s;
+    flex-shrink: 0;
   }
-  .gpx-btn::before { content: '\2B07'; font-size: 11px; }
+  .gpx-btn::before { content: '\2B07\00a0'; font-size: 10px; }
   .gpx-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .route-card-stats {
+    display: flex;
+    gap: 18px;
+    font-size: 11px;
+    color: var(--ink-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .route-stat b {
+    display: block;
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--ink);
+    font-family: 'Playfair Display', serif;
+    line-height: 1.1;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+  .route-card-chart {
+    width: 100%;
+    height: 38px;
+    display: block;
+    overflow: visible;
+  }
+  .route-card-chart path.elev-fill { stroke: none; fill-opacity: 0.18; }
+  .route-card-chart path.elev-line { fill: none; stroke-width: 1.5; stroke-linejoin: round; }
+  .route-card-chart-empty {
+    color: var(--ink-faint);
+    font-size: 11px;
+    font-style: italic;
+    text-align: center;
+    padding: 12px 0;
+  }
+
+  /* CLIMATE BOX */
+  .climate-box {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--green);
+    border-radius: 0 10px 10px 0;
+    padding: 14px 18px;
+    margin-top: 16px;
+  }
+  .climate-box[hidden] { display: none; }
+  .climate-box-title {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 12px;
+  }
+  .climate-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 22px;
+    font-size: 11px;
+    color: var(--ink-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .climate-stats b {
+    display: block;
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--ink);
+    font-family: 'Playfair Display', serif;
+    line-height: 1.1;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+  .climate-note {
+    font-size: 12px;
+    color: var(--ink-faint);
+    margin-top: 12px;
+    line-height: 1.5;
+  }
+
+  /* COL LABELS (permanent tooltips at high zoom) */
+  .leaflet-tooltip.col-label {
+    background: rgba(255,255,255,0.94);
+    border: 1px solid var(--border);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 2px 7px;
+    border-radius: 4px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+    white-space: nowrap;
+  }
+  .leaflet-tooltip.col-label::before { display: none; }
   .gpx-note {
     font-size: 12px;
     color: var(--ink-faint);
@@ -487,7 +614,7 @@
     <p class="hero-sub">Two motorcycles, two couples, two days — Barcelona to the Catalan Pyrenees and back.</p>
     <div class="hero-pills">
       <span class="pill">Barcelona base</span>
-      <span class="pill">2 days · ~550 km total</span>
+      <span class="pill">2 days · 440&ndash;540 km</span>
       <span class="pill">2 riders + 2 passengers · 2 bikes</span>
       <span class="pill">Andorra optional</span>
     </div>
@@ -512,12 +639,83 @@
     <span>&#x26FD; Fuel</span>
     <span>&#x26F0;&#xFE0F; Mountain pass</span>
   </div>
-  <div class="gpx-buttons">
-    <button class="gpx-btn" data-gpx="day1-main" type="button">Day 1 &mdash; Twisty (Coll de Toses)</button>
-    <button class="gpx-btn" data-gpx="day1-alt" type="button">Day 1 alt &mdash; Direct (Cad&iacute; tunnel)</button>
-    <button class="gpx-btn" data-gpx="day2-main" type="button">Day 2 &mdash; Andorra loop</button>
-    <button class="gpx-btn" data-gpx="day2-alt" type="button">Day 2 alt &mdash; Port del Cant&oacute;</button>
+  <div class="route-cards">
+    <article class="route-card" data-route-card="day1-main">
+      <div class="route-card-top">
+        <div class="route-card-headings">
+          <span class="route-card-badge" style="background:#e6005c">Day 1 main</span>
+          <span class="route-card-name">Twisty &middot; Coll de Toses (N-152)</span>
+        </div>
+        <button class="gpx-btn" data-gpx="day1-main" type="button" title="Download GPX">GPX</button>
+      </div>
+      <div class="route-card-stats">
+        <span class="route-stat"><b data-stat-km>&mdash;</b>km</span>
+        <span class="route-stat"><b data-stat-time>&mdash;</b>riding</span>
+        <span class="route-stat"><b data-stat-elev>&mdash;</b>m max</span>
+      </div>
+      <svg class="route-card-chart" data-chart="day1-main" viewBox="0 0 200 38" preserveAspectRatio="none"></svg>
+    </article>
+
+    <article class="route-card" data-route-card="day1-alt">
+      <div class="route-card-top">
+        <div class="route-card-headings">
+          <span class="route-card-badge" style="background:#e6005c">Day 1 alt</span>
+          <span class="route-card-name">Direct &middot; C-16 / Cad&iacute; tunnel</span>
+        </div>
+        <button class="gpx-btn" data-gpx="day1-alt" type="button" title="Download GPX">GPX</button>
+      </div>
+      <div class="route-card-stats">
+        <span class="route-stat"><b data-stat-km>&mdash;</b>km</span>
+        <span class="route-stat"><b data-stat-time>&mdash;</b>riding</span>
+        <span class="route-stat"><b data-stat-elev>&mdash;</b>m max</span>
+      </div>
+      <svg class="route-card-chart" data-chart="day1-alt" viewBox="0 0 200 38" preserveAspectRatio="none"></svg>
+    </article>
+
+    <article class="route-card" data-route-card="day2-main">
+      <div class="route-card-top">
+        <div class="route-card-headings">
+          <span class="route-card-badge" style="background:#0066ff">Day 2 main</span>
+          <span class="route-card-name">Andorra loop &middot; Puymorens + Cad&iacute;</span>
+        </div>
+        <button class="gpx-btn" data-gpx="day2-main" type="button" title="Download GPX">GPX</button>
+      </div>
+      <div class="route-card-stats">
+        <span class="route-stat"><b data-stat-km>&mdash;</b>km</span>
+        <span class="route-stat"><b data-stat-time>&mdash;</b>riding</span>
+        <span class="route-stat"><b data-stat-elev>&mdash;</b>m max</span>
+      </div>
+      <svg class="route-card-chart" data-chart="day2-main" viewBox="0 0 200 38" preserveAspectRatio="none"></svg>
+    </article>
+
+    <article class="route-card" data-route-card="day2-alt">
+      <div class="route-card-top">
+        <div class="route-card-headings">
+          <span class="route-card-badge" style="background:#0066ff">Day 2 alt</span>
+          <span class="route-card-name">Eix Pirinenc west &middot; Port del Cant&oacute;</span>
+        </div>
+        <button class="gpx-btn" data-gpx="day2-alt" type="button" title="Download GPX">GPX</button>
+      </div>
+      <div class="route-card-stats">
+        <span class="route-stat"><b data-stat-km>&mdash;</b>km</span>
+        <span class="route-stat"><b data-stat-time>&mdash;</b>riding</span>
+        <span class="route-stat"><b data-stat-elev>&mdash;</b>m max</span>
+      </div>
+      <svg class="route-card-chart" data-chart="day2-alt" viewBox="0 0 200 38" preserveAspectRatio="none"></svg>
+    </article>
   </div>
+
+  <div class="climate-box" id="climate-box" hidden>
+    <p class="climate-box-title">Conditions in Puigcerd&agrave; &middot; mid-May (real ERA5 data)</p>
+    <div class="climate-stats">
+      <span><b data-clim-tmax>&mdash;</b>day max</span>
+      <span><b data-clim-tmin>&mdash;</b>night min</span>
+      <span><b data-clim-prec>&mdash;</b>mm rain (11d)</span>
+      <span><b data-clim-snow>&mdash;</b>cm snow</span>
+    </div>
+    <p class="climate-note">11-day window from <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> historical archive (May 10-20, 2024) at Puigcerd&agrave; (1213m). Weather varies year to year &mdash; cols above 1800m can still get morning frost or snow patches in early May. Pack thermal layers.</p>
+  </div>
+
   <p class="gpx-note">
     <span id="route-status">Loading road-snapped tracks via <a href="https://brouter.de/" target="_blank" rel="noopener">BRouter</a>&hellip;</span><br>
     Routes inspired by <a href="https://kurviger.de/" target="_blank" rel="noopener">Kurviger</a>,
@@ -918,10 +1116,10 @@
     subdomains: 'abc'
   });
   osmTopo.addTo(map); // default: topo for relief visualisation
-  L.control.layers(
+  var layerControl = L.control.layers(
     { 'Topo (relief)': osmTopo, 'Standard (OSM)': osmStandard },
     null,
-    { position: 'topright', collapsed: false }
+    { position: 'topright', collapsed: true }
   ).addTo(map);
 
   function icon(emoji, size) {
@@ -947,6 +1145,7 @@
     // Anchors
     { ll:[41.3874, 2.1686], ico:'\uD83C\uDFCD\uFE0F', label:'Barcelona', type:'Bike pickup / return', desc:'Pick up & return the 2 touring bikes. Coffee, briefing, and beers on the way back.', size:26 },
     { ll:[42.4316, 1.9282], ico:'\uD83D\uDECF\uFE0F', label:'Puigcerd\u00e0', type:'Night stop', desc:'Border town, lovely lake, excellent restaurants. ~1200m altitude \u2014 pack warm layers.', size:26 },
+    { ll:[42.43491, 1.92602], ico:'\uD83C\uDFE8', label:'Hotel del Lago', type:'Hotel \u2014 night 1', desc:'On the Puigcerd\u00e0 lake, walking distance to the old town. ~\u20ac80\u2013120/room. Book early for May weekends.' },
 
     // Day 1 \u2014 Twisty (N-152 via Coll de Toses)
     { ll:[41.9303, 2.2545], ico:'\u2615', label:'Vic', type:'Coffee break', desc:'Plain of Vic \u2014 fast warm-up section before the mountains kick in.' },
@@ -979,14 +1178,36 @@
     { ll:[41.5933, 1.8370], ico:'\uD83C\uDFDB\uFE0F', label:'Montserrat', type:'Visit (optional)', desc:'Dramatic cliff monastery \u2014 30-min stop, the access road is already fun.' }
   ];
 
+  // Markers \u2014 we collect col markers separately so we can show
+  // their permanent labels only when zoomed in enough.
+  var colMarkers = [];
   spots.forEach(function(s) {
-    L.marker(s.ll, { icon: icon(s.ico, s.size) })
+    var marker = L.marker(s.ll, { icon: icon(s.ico, s.size) })
       .addTo(map)
       .bindPopup(
         '<div class="popup-type">' + s.type + '</div>' +
         '<strong>' + s.label + '</strong><br>' + s.desc
       );
+    if (s.ico === '\u26F0\uFE0F') {
+      marker.bindTooltip(s.label.replace(/\s*\(.*$/, ''), {
+        permanent: true,
+        direction: 'top',
+        offset: [0, -10],
+        className: 'col-label'
+      });
+      colMarkers.push(marker);
+    }
   });
+
+  function updateColTooltips() {
+    var show = map.getZoom() >= 9;
+    colMarkers.forEach(function(m) {
+      if (show) m.openTooltip(); else m.closeTooltip();
+    });
+  }
+  map.on('zoomend', updateColTooltips);
+  // Initial: closed (the default fit zoom is ~8)
+  setTimeout(updateColTooltips, 50);
 
   // ============================================================
   // Routes \u2014 main + alternatives
@@ -1060,10 +1281,12 @@
   // Render all polylines (initially with the simplified track \u2014
   // they'll be replaced by the BRouter road-snapped geometry below).
   // Each route gets a white casing underneath for legibility on the
-  // topo layer (greens/browns can otherwise hide a coloured line).
+  // topo layer, and casing+line are grouped into a layerGroup so
+  // the layer control can toggle each route on/off independently.
   Object.keys(routes).forEach(function(key) {
     var r = routes[key];
     var w = r.weight || 4;
+    var members = [];
     if (key !== 'drive') {
       r._casing = L.polyline(r.track, {
         color: '#ffffff',
@@ -1071,7 +1294,8 @@
         opacity: 0.85,
         lineCap: 'round',
         lineJoin: 'round'
-      }).addTo(map);
+      });
+      members.push(r._casing);
     }
     r._layer = L.polyline(r.track, {
       color: r.color,
@@ -1080,7 +1304,16 @@
       dashArray: r.dash || null,
       lineCap: 'round',
       lineJoin: 'round'
-    }).addTo(map);
+    });
+    members.push(r._layer);
+    r._group = L.layerGroup(members).addTo(map);
+  });
+
+  // Add the moto routes (and the drive) as overlays in the layer
+  // control so each can be toggled independently.
+  ['day1-main','day1-alt','day2-main','day2-alt','drive'].forEach(function(k) {
+    var r = routes[k];
+    if (r && r._group) layerControl.addOverlay(r._group, r.name);
   });
 
   // Fit map on the 2 moto days only \u2014 the Avignon\u2192BCN drive is
@@ -1101,7 +1334,7 @@
   // ============================================================
   var BROUTER_URL = 'https://brouter.de/brouter';
   var ROUTING_PROFILE = 'car-fast'; // safest predictable profile on brouter.de
-  var CACHE_VERSION = 'v2';
+  var CACHE_VERSION = 'v3'; // bump when storage shape changes
   var CACHE_TTL_MS = 30 * 24 * 3600 * 1000;
   var statusEl = document.getElementById('route-status');
   var snappableKeys = Object.keys(routes).filter(function(k) {
@@ -1134,12 +1367,14 @@
       if (!raw) return null;
       var obj = JSON.parse(raw);
       if (!obj || !obj.coords || (Date.now() - obj.t) > CACHE_TTL_MS) return null;
-      return obj.coords;
+      return { coords: obj.coords, props: obj.props || {} };
     } catch (e) { return null; }
   }
-  function saveCached(routeKey, coords) {
+  function saveCached(routeKey, payload) {
     try {
-      localStorage.setItem(cacheKey(routeKey), JSON.stringify({ t: Date.now(), coords: coords }));
+      localStorage.setItem(cacheKey(routeKey), JSON.stringify({
+        t: Date.now(), coords: payload.coords, props: payload.props || {}
+      }));
     } catch (e) { /* quota or disabled \u2014 ignore */ }
   }
 
@@ -1157,32 +1392,99 @@
     }).then(function(geo) {
       var feat = geo && geo.features && geo.features[0];
       if (!feat || !feat.geometry || !feat.geometry.coordinates) return null;
-      // GeoJSON LineString uses [lon, lat] \u2014 swap for Leaflet
-      return feat.geometry.coordinates.map(function(c) { return [c[1], c[0]]; });
+      // GeoJSON LineString uses [lon, lat, elev] \u2014 swap to [lat, lon, elev] for Leaflet
+      return {
+        coords: feat.geometry.coordinates.map(function(c) {
+          return [c[1], c[0], (typeof c[2] === 'number' ? c[2] : null)];
+        }),
+        props: feat.properties || {}
+      };
     });
   }
 
-  function applySnapped(routeKey, coords) {
+  function applySnapped(routeKey, coords, props) {
     var r = routes[routeKey];
     if (!coords || coords.length < 2 || !r._layer) return;
     r.snappedTrack = coords;
     r._layer.setLatLngs(coords);
     if (r._casing) r._casing.setLatLngs(coords);
+    if (props) {
+      r.distanceM = +props['track-length'] || null;
+      r.timeS = +props['total-time'] || null;
+    }
+    updateRouteCard(routeKey);
+  }
+
+  // ============================================================
+  // Route card stats + inline SVG elevation profile
+  // ============================================================
+  function formatTime(s) {
+    if (!s) return '\u2014';
+    var h = Math.floor(s / 3600);
+    var m = Math.round((s % 3600) / 60);
+    if (m === 60) { h++; m = 0; }
+    return h + 'h' + (m < 10 ? '0' + m : m);
+  }
+
+  function buildElevationPaths(coords) {
+    var elevs = [];
+    for (var i = 0; i < coords.length; i++) {
+      if (typeof coords[i][2] === 'number') elevs.push(coords[i][2]);
+    }
+    if (elevs.length < 2) return null;
+    var min = Infinity, max = -Infinity;
+    for (var j = 0; j < elevs.length; j++) {
+      if (elevs[j] < min) min = elevs[j];
+      if (elevs[j] > max) max = elevs[j];
+    }
+    var range = (max - min) || 1;
+    var w = 200, h = 38, pad = 1.5, n = elevs.length;
+    var line = '';
+    for (var k = 0; k < n; k++) {
+      var x = (k / (n - 1)) * w;
+      var y = h - pad - ((elevs[k] - min) / range) * (h - 2 * pad);
+      line += (k === 0 ? 'M ' : ' L ') + x.toFixed(1) + ',' + y.toFixed(1);
+    }
+    var fill = 'M 0,' + h + ' ' + line.replace(/^M /, 'L ') + ' L ' + w + ',' + h + ' Z';
+    return { line: line, fill: fill, max: max, min: min };
+  }
+
+  function updateRouteCard(routeKey) {
+    var card = document.querySelector('[data-route-card="' + routeKey + '"]');
+    if (!card) return;
+    var r = routes[routeKey];
+    var coords = r.snappedTrack || r.track;
+    if (r.distanceM) {
+      card.querySelector('[data-stat-km]').textContent = (r.distanceM / 1000).toFixed(0);
+    }
+    if (r.timeS) {
+      card.querySelector('[data-stat-time]').textContent = formatTime(r.timeS);
+    }
+    var paths = buildElevationPaths(coords);
+    if (paths) {
+      card.querySelector('[data-stat-elev]').textContent = paths.max.toFixed(0);
+      var svg = card.querySelector('[data-chart="' + routeKey + '"]');
+      if (svg) {
+        svg.innerHTML =
+          '<path class="elev-fill" d="' + paths.fill + '" fill="' + r.color + '"/>' +
+          '<path class="elev-line" d="' + paths.line + '" stroke="' + r.color + '"/>';
+      }
+    }
   }
 
   updateStatus();
   snappableKeys.forEach(function(key) {
     var cached = loadCached(key);
     if (cached) {
-      applySnapped(key, cached);
+      applySnapped(key, cached.coords, cached.props);
       pending--;
       updateStatus();
       return;
     }
-    fetchSnapped(key).then(function(coords) {
-      if (coords) {
-        applySnapped(key, coords);
-        saveCached(key, coords);
+    fetchSnapped(key).then(function(result) {
+      if (result && result.coords) {
+        applySnapped(key, result.coords, result.props);
+        saveCached(key, result);
       } else {
         failed++;
       }
@@ -1252,6 +1554,56 @@
       downloadGpx(btn.getAttribute('data-gpx'));
     });
   });
+
+  // ============================================================
+  // Climate strip \u2014 Open-Meteo historical archive (ERA5)
+  // Real recorded daily values for mid-May 2024 at Puigcerd\u00e0,
+  // cached in localStorage for 30 days. Helps Julian & Joanne
+  // know what to actually pack.
+  // ============================================================
+  (function loadClimate() {
+    var box = document.getElementById('climate-box');
+    if (!box) return;
+    var cacheK = 'pyrenees-moto:climate:puigcerda:may-2024:v1';
+    var ttl = 30 * 24 * 3600 * 1000;
+
+    function sum(a) { return a.reduce(function(x,y) { return x + (y || 0); }, 0); }
+    function avg(a) { return sum(a) / (a.length || 1); }
+
+    function render(d) {
+      if (!d || !d.daily) return;
+      var dl = d.daily;
+      var tmax = avg(dl.temperature_2m_max);
+      var tmin = avg(dl.temperature_2m_min);
+      var prec = sum(dl.precipitation_sum);
+      var snow = sum(dl.snowfall_sum);
+      box.querySelector('[data-clim-tmax]').textContent = tmax.toFixed(0) + '\u00b0C';
+      box.querySelector('[data-clim-tmin]').textContent = tmin.toFixed(0) + '\u00b0C';
+      box.querySelector('[data-clim-prec]').textContent = prec.toFixed(0);
+      box.querySelector('[data-clim-snow]').textContent = snow > 0 ? snow.toFixed(1) : '0';
+      box.hidden = false;
+    }
+
+    try {
+      var raw = localStorage.getItem(cacheK);
+      if (raw) {
+        var obj = JSON.parse(raw);
+        if (obj && obj.t && (Date.now() - obj.t) < ttl && obj.data) {
+          render(obj.data);
+          return;
+        }
+      }
+    } catch (e) { /* ignore */ }
+
+    fetch('https://archive-api.open-meteo.com/v1/archive?latitude=42.4316&longitude=1.9282&start_date=2024-05-10&end_date=2024-05-20&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,snowfall_sum&timezone=auto')
+      .then(function(r) { return r.ok ? r.json() : null; })
+      .then(function(d) {
+        if (!d) return;
+        try { localStorage.setItem(cacheK, JSON.stringify({ t: Date.now(), data: d })); } catch (e) {}
+        render(d);
+      })
+      .catch(function(err) { console.warn('Open-Meteo failed:', err); });
+  })();
 })();
 </script>
 </body>
